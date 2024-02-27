@@ -22,7 +22,7 @@ def echo_input():
     input_text = request.form.get("user_input", "")
     if not len(input_text):
         input_text = 'Elena says Hi'
-    return "You entered: " + input_text
+    return "You entered:" + input_text + '<br/> Have a nice day'
 
 
 
