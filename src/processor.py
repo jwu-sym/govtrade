@@ -43,6 +43,7 @@ def extract_trades(fn):
     try:
         text = page.extract_text() 
         text = text.replace('\x00','')
+        text = text.replace('\'','')
         text = text.split('ID')[1]
         text = text.split('Gains >\n$200?\n')[1]
         trades = text.split('* For the complete')[0]

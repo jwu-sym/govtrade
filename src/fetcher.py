@@ -1,8 +1,13 @@
 import os
 import requests
+import db
 from zipfile import ZipFile
 from processor import extract_trades, convert_record
 
+from os import environ as env
+from dotenv import load_dotenv
+load_dotenv()
+    
 def fetch(url, filename):
     response = requests.get(url)
     
@@ -30,9 +35,6 @@ def process(filename):
 
     #columns = lines[0]
     
-    #result = []
-    docIds = []
-    
     records = []
     for line in lines[1:]:
         
@@ -40,19 +42,27 @@ def process(filename):
         records.append(record)
 
         docId = record['docId']
-        url = f'https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/2024/{docId}.pdf'
+        gtUrl = env['GOVTRADE_URL']
+        url = f'{gtUrl}/{docId}.pdf'
         
         dir = get_data_dir()
-        pdf = f'{dir}/{docId}.pdf' # trades file for the record
-        resp = fetch(url, pdf)
+        outfn = f'{dir}/{docId}.pdf' # trades file for the record
+        resp = fetch(url, outfn)
         if resp:
-            trades = extract_trades(pdf)
+            trades = extract_trades(outfn)
             record['trades'] = trades
 
-        #result.append(line)
-    
-    print(records)
-    
+        if not (record['trades']):
+           continue
+
+        if record['lastName'] == 'Pelosi':
+            print(record)
+
+        db.insert_record(record)
+
+        records.append(record)
+
+    return records
 
 def get_data_dir():
     dir = os.getcwd()
@@ -64,10 +74,12 @@ def get_data_dir():
 if __name__ == '__main__' :
     url = 'https://disclosures-clerk.house.gov/public_disc/financial-pdfs/2024FD.zip'
     
+    file = env['GOVTRADE_FILE']  # congress members trades filename
     dir = get_data_dir()
-    
-    fn = f'{dir}/2024FD.zip'
-    
+    fn = f'{dir}/{file}'
+
+    db.init()
+
     fetch(url, fn)
 
     process(fn)
