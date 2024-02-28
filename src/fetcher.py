@@ -1,18 +1,25 @@
 import os
 import requests
 from zipfile import ZipFile
+from processor import extract_trades, convert_record
 
 def fetch(url, filename):
     response = requests.get(url)
     
     if response.status_code == 404:
         #print(f'skipped: {url} ')
-        return
+        return None
+    
+    content = response.content
+    if not content:
+        return None
 
-    print(f'fetching{url}')
+    print(f'fetching {url}')
 
     f = open(filename, 'wb')
-    f.write(response.content)
+    f.write(content)
+
+    return content
 
 def process(filename):
     lines = None
@@ -21,7 +28,7 @@ def process(filename):
         with myzip.open('2024FD.txt') as myfile:
             lines = (myfile.readlines())
 
-    columns = lines[0]
+    #columns = lines[0]
     
     #result = []
     docIds = []
@@ -32,62 +39,34 @@ def process(filename):
         record = convert_record(line)
         records.append(record)
 
-        #if line[1] !='Pelosi':
-        #    continue
-
         docId = record['docId']
         url = f'https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/2024/{docId}.pdf'
         
         dir = get_data_dir()
-        
-        fetch(url, f'{dir}/data/{docId}.pdf')
-        
+        pdf = f'{dir}/{docId}.pdf' # trades file for the record
+        resp = fetch(url, pdf)
+        if resp:
+            trades = extract_trades(pdf)
+            record['trades'] = trades
+
         #result.append(line)
     
-    print(records[-1])
+    print(records)
     
-    
-    #'https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/2024/'
-    #print(docIds)
 
 def get_data_dir():
     dir = os.getcwd()
-    dir = dir.replace('/src','')  # ensure data output directory under root
+    dir = dir.replace('/src','')  # ensure data output directory under project root
+    
+    return f'{dir}/data'
 
-    return dir
-
-
-def convert_record(line):
-    line = str(line)
-        
-    line = line[1:]
-
-    line = line.replace('\\r\\n', '')
-    line = line.replace('\'', '')
-    line = line.split('\\t')
-
-    o = {'firstName':'',
-         'lastName':'',
-         'filingType':'',
-         'stateDst':'',
-         'year':'',
-         'filingDate':'',
-         'docId':''
-         }
-
-    o['firstName'] = line[2]
-    o['lastName'] = line[1]
-    o['docId'] = line[8]
-
-
-    return o
 
 if __name__ == '__main__' :
     url = 'https://disclosures-clerk.house.gov/public_disc/financial-pdfs/2024FD.zip'
     
     dir = get_data_dir()
     
-    fn = f'{dir}/data/2024FD.zip'
+    fn = f'{dir}/2024FD.zip'
     
     fetch(url, fn)
 

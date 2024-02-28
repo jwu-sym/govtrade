@@ -9,3 +9,4 @@ MarkupSafe==2.1.5
 packaging==23.2
 werkzeug==3.0.1
 zipp==3.17.0
+PyPDF2==3.0.1
