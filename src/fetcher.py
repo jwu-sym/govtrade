@@ -1,4 +1,4 @@
-
+import os
 import requests
 from zipfile import ZipFile
 
@@ -6,7 +6,7 @@ def fetch(url, filename):
     response = requests.get(url)
     
     if response.status_code == 404:
-        print('error' + url)
+        #print(f'skipped: {url} ')
         return
 
     
@@ -40,16 +40,33 @@ def process(filename):
         docId = line[-1]
         docIds.append(docId)
 
-        url = 'https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/2024/' + docId + '.pdf'
+        url = f'https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/2024/{docId}.pdf'
+
+        dir = get_data_dir()
         
-        fetch(url, '../data/'+ docId + '.pdf')
+        fetch(url, f'{dir}/data/{docId}.pdf')
         
         result.append(line)
     
+    print(result[0])
+    print(result[1:2])
     
-    
+    #'https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/2024/'
+    #print(docIds)
+
+def get_data_dir():
+    dir = os.getcwd()
+    dir = dir.replace('/src','')  # ensure data output directory under root
+
+    return dir
+
 if __name__ == '__main__' :
     url = 'https://disclosures-clerk.house.gov/public_disc/financial-pdfs/2024FD.zip'
-    fn = '../data/2024FD.zip'
+    
+    dir = get_data_dir()
+    
+    fn = f'{dir}/data/2024FD.zip'
+    
     fetch(url, fn)
+
     process(fn)
