@@ -34,8 +34,13 @@ def convert_record(line):
 
 def extract_trades(fn):
     # creating a pdf reader object 
-    reader = PdfReader(fn) 
-    if len(reader.pages) < 1:
+    reader = None
+    try:
+        reader = PdfReader(fn) 
+    except:
+        pass
+    
+    if not reader or len(reader.pages) < 1:
         return None
     
     page = reader.pages[0]

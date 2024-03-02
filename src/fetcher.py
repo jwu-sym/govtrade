@@ -26,7 +26,7 @@ def fetch(url, filename):
 
     return content
 
-def process(filename):
+def parse(filename):
     lines = None
 
     with ZipFile(filename) as myzip:
@@ -36,31 +36,38 @@ def process(filename):
     #columns = lines[0]
     
     records = []
-    for line in lines[1:4]:
+    for line in lines[1:]:
         
         record = convert_record(line)
         records.append(record)
 
+    print(f'Parsed # of records {len(records)}')
+
+    return records
+
+def fetch_trade_doc(docId):
+    gtUrl = env['GOVTRADE_URL']
+    url = f'{gtUrl}/{docId}.pdf'
+    
+    outfn = f'./data/{docId}.pdf' # trades file of the record
+    resp = fetch(url, outfn)
+    #resp = True
+    
+    if resp:
+        trades = extract_trades(outfn)
+        return trades
+
+def fetch_trades(records):
+
+    for record in records:
         docId = record['docId']
-        gtUrl = env['GOVTRADE_URL']
-        url = f'{gtUrl}/{docId}.pdf'
-        
-        outfn = f'./data/{docId}.pdf' # trades file of the record
-        resp = fetch(url, outfn)
-        
-        if resp:
-            trades = extract_trades(outfn)
-            record['trades'] = trades
+        trades = fetch_trade_doc(docId) # fetch individual trade doc
 
-        if not (record['trades']):
-           continue
-
+        record['trades'] = trades
+        
         if record['lastName'] == 'Pelosi':
             print(record)
 
-        records.append(record)
-
-    return records
 
 def save_records(records):
     for record in records:
@@ -69,13 +76,14 @@ def save_records(records):
 
 
 if __name__ == '__main__' :
-    url = 'https://disclosures-clerk.house.gov/public_disc/financial-pdfs/2024FD.zip'
-    
+    url = env['GOVTRADELIST_URL']
     fn = env['GOVTRADE_FILE']  # congress members trades filename
     
-    fetch(url, fn)
+    fetch(url, fn) # fetch gov trades list
 
-    records = process(fn)
+    records = parse(fn)
+    fetch_trades(records) # fetch individual trade doc per record
 
     db.init()
     save_records(records)
+    db.close()

@@ -6,16 +6,29 @@ from psycopg2 import DatabaseError
 load_dotenv()
 
 DATABASE_URL = env['DB_URL']
+CONN = None  # cached connection
 
-def execute(sql):
+def get_connection():
+    global CONN
+    if CONN:
+        return CONN
+    
     conn = None
     try:
         conn = psycopg2.connect(DATABASE_URL, sslmode='require')
         conn.autocommit = True
         print(conn)
+        
     except (Exception, DatabaseError) as error:
           print(error)  
           return
+    
+    CONN = conn
+
+    return CONN
+
+def execute(sql):
+    conn = get_connection()
 
     with conn.cursor() as cur:
       try:
@@ -23,7 +36,7 @@ def execute(sql):
       except (Exception, DatabaseError) as error:
           print(error)
 
-    conn.close()
+    #conn.close()
 
 def init():
     fn = open(f'./src/schema/schema.sql', 'r')
@@ -31,6 +44,10 @@ def init():
     fn.close()
 
     execute(sql)
+
+def close():
+    if CONN:
+        CONN.close()
 
 def insert_record(r):
     try:
