@@ -9,6 +9,7 @@ MarkupSafe==2.1.5
 packaging==23.2
 werkzeug==3.0.1
 zipp==3.17.0
+requests==2.31.0
 PyPDF2==3.0.1
-python_dotenv=1.0.1
-psycopg2-binary=2.9.9
+python_dotenv==1.0.1
+psycopg2-binary==2.9.9
