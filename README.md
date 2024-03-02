@@ -16,8 +16,8 @@ The problem my project is aimed at solving is combating the distributed, unorgan
 3. db.py inserts corresponding records to postgresql database hosted in heroku.
 4. DB is postgresql, connection parameters are in .env file.
 Sample db records screenshot [here](https://govtrade-a46bca12cc9b.herokuapp.com/static/img/db_records.png).
-
-5. Run under project root directory:
+5. public url [govtrade](https://govtrade-a46bca12cc9b.herokuapp.com/)
+6. Run under project root directory:
     #### `python3 -m venv venv`
     #### `source ./venv/bin/activate`
     #### `pip install -r requirements.txt`

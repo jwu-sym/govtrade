@@ -5,7 +5,7 @@ from flask import Flask, request, render_template
 
 import time
 import atexit
-import db, processor
+from .processor import get_records
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -34,7 +34,7 @@ def echo_input():
 
 @app.route("/records", methods=["GET"])
 def records():
-    records = processor.get_records()  
+    records = get_records()  
     return render_template('index.html')
    
 
