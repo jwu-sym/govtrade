@@ -64,4 +64,19 @@ def insert_record(r):
         execute(sql)
     except (Exception, DatabaseError) as error:
         print(error)
-    
+
+def read_records(columns, tablename='trades'):
+    try:
+        sql = f"select {','.join(columns)} from trades"
+        
+        conn = get_connection()
+
+        with conn.cursor() as cur:
+            cur.execute(sql)
+            records = cur.fetchmany(2000)
+            return records
+
+        
+    except (Exception, DatabaseError) as error:
+        print(error)
+        

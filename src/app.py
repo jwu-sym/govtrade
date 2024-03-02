@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request
+from flask import Flask, request, render_template
 #from flask import send_from_directory
 
 import time
 import atexit
+import db, processor
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -31,6 +32,11 @@ def echo_input():
     return "You entered:" + input_text + '<br/> Have a nice day'
 
 
+@app.route("/records", methods=["GET"])
+def records():
+    records = processor.get_records()  
+    return render_template('index.html')
+   
 
 def daily_fetch_job():
     print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))

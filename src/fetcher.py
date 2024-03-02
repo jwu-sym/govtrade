@@ -54,15 +54,18 @@ def fetch_trade_doc(docId):
     #resp = True
     
     if resp:
-        trades = extract_trades(outfn)
-        return trades
+        return extract_trades(outfn)
+    
 
 def fetch_trades(records):
 
     for record in records:
         docId = record['docId']
         trades = fetch_trade_doc(docId) # fetch individual trade doc
-
+        
+        if not trades:
+            trades = ''
+        
         record['trades'] = trades
         
         if record['lastName'] == 'Pelosi':
@@ -70,6 +73,7 @@ def fetch_trades(records):
 
 
 def save_records(records):
+    #print(f'saving # records {len(records)}')
     for record in records:
         db.insert_record(record)
 
@@ -91,3 +95,4 @@ def main():
 
 if __name__ == '__main__' :
     main()
+    

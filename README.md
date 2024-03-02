@@ -15,7 +15,7 @@ The problem my project is aimed at solving is combating the distributed, unorgan
 2. processor.py helps fetcher.py convert raw data to structured records, extracts trades from trade pdf doc per record.
 3. db.py inserts corresponding records to postgresql database hosted in heroku.
 4. DB is postgresql, connection parameters are in .env file.
-Sample db clip screenshot [here] https://govtrade-a46bca12cc9b.herokuapp.com/static/img/db_records.png
+Sample db records screenshot [here](https://govtrade-a46bca12cc9b.herokuapp.com/static/img/db_records.png).
 
 5. Run under project root directory:
     #### `python3 -m venv venv`
