@@ -4,8 +4,6 @@ from dotenv import load_dotenv
 import psycopg2
 from psycopg2 import DatabaseError
 load_dotenv()
-print(env['DB_URL'])
-
 
 DATABASE_URL = env['DB_URL']
 
@@ -36,14 +34,14 @@ def init():
 
 def insert_record(r):
     try:
-        sql = "insert into trades values('{}','{}','{}','{}','{}','{}','{}','{}')".format(
+        sql = "insert into trades (docId, firstName, lastName, filingType, stateDst, year, filingDate, trades) values('{}','{}','{}','{}','{}','{}','{}','{}')".format(
+            r['docId'],
             r['firstName'], 
             r['lastName'],
             r['filingType'],
             r['stateDst'],
             r['year'],
             r['filingDate'],
-            r['docId'],
             r['trades']
         )
         execute(sql)
