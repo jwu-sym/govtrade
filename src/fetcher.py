@@ -73,9 +73,8 @@ def save_records(records):
     for record in records:
         db.insert_record(record)
 
-
-
-if __name__ == '__main__' :
+#@scheduler.task('cron', id='do_job_3', week='*', day_of_week='sun')
+def main():
     url = env['GOVTRADELIST_URL']
     fn = env['GOVTRADE_FILE']  # congress members trades filename
     
@@ -87,3 +86,8 @@ if __name__ == '__main__' :
     db.init()
     save_records(records)
     db.close()
+
+    print('Job  executed')
+
+if __name__ == '__main__' :
+    main()
