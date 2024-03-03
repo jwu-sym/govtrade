@@ -67,7 +67,7 @@ def insert_record(r):
 
 def read_records(columns, tablename='trades'):
     try:
-        sql = f"select {','.join(columns)} from trades"
+        sql = f"select {','.join(columns)} from {tablename}"
         
         conn = get_connection()
 
