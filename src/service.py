@@ -46,7 +46,10 @@ def get_records():
 
 def get_last_run():
     last_run = None
-    f = open('/tmp/gt_lastrun')
-    last_run = str(f.read())
-    f.close()
+    try:
+        f = open('/tmp/gt_lastrun')
+        last_run = str(f.read())[:19]
+        f.close()
+    except:
+        pass
     return last_run

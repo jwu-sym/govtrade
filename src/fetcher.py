@@ -54,8 +54,8 @@ def fetch_trade_doc(docId):
     url = f'{gtUrl}/{docId}.pdf'
     
     outfn = f'/tmp/{docId}.pdf' # trades file of the record
-    #resp = fetch(url, outfn)
-    resp = True
+    resp = fetch(url, outfn)
+    #resp = True
     
     if resp:
         return extract_trades(outfn)
