@@ -5,7 +5,7 @@ from flask import Flask, request, render_template
 
 import time
 import atexit
-from .processor import get_records
+from .service import get_records
 
 from apscheduler.schedulers.background import BackgroundScheduler
 

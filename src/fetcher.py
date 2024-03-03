@@ -49,7 +49,7 @@ def fetch_trade_doc(docId):
     gtUrl = env['GOVTRADE_URL']
     url = f'{gtUrl}/{docId}.pdf'
     
-    outfn = f'./data/{docId}.pdf' # trades file of the record
+    outfn = f'/tmp/{docId}.pdf' # trades file of the record
     resp = fetch(url, outfn)
     #resp = True
     

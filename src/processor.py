@@ -1,5 +1,4 @@
 from PyPDF2 import PdfReader 
-from .db import read_records
 
 def convert_record(line):
     line = str(line)
@@ -61,22 +60,3 @@ def extract_trades(fn):
         print(f'Error processing {fn}')
     
     return trades
-
-
-def get_records():
-    
-    columns = ['id', 'docId', 'firstName', 'lastName', 'filingType', 'stateDst', 'year', 'filingDate', 'trades']
-    rows = read_records(columns)
-
-    records = []
-    for row in rows:
-        r = {}
-        for i in range(len(columns)):    
-            r[columns[i]] = row[i]
-        
-        if not len(r['trades']):
-            continue
-        
-        records.append(r)
-    return records
-
