@@ -17,7 +17,7 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            width: 33%; /* Makes the search box one-third of the table width */
+            width: 50%; /* Makes the search box one-third of the table width */
             box-sizing: border-box;
             margin-bottom: 20px;
         }
@@ -44,6 +44,12 @@
         tr:hover {
             background-color: #ddd; /* Hover effect for rows */
         }
+        .sort-asc:after {
+            content: " \21E7"; /* Up arrow for ascending */
+        }
+        .sort-desc:after {
+            content: " \21E9"; /* Down arrow for descending */
+        }
     </style>
 </head>
 <body>
@@ -53,15 +59,15 @@
     <table id="recordsTable">
         <thead>
             <tr>
-                <th onclick="sortTable(0)">ID</th>
-                <th onclick="sortTable(1)">Doc ID</th>
-                <th onclick="sortTable(2)">First Name</th>
-                <th onclick="sortTable(3)">Last Name</th>
-                <th onclick="sortTable(4)">Filing Type</th>
-                <th onclick="sortTable(5)">State/District</th>
-                <th onclick="sortTable(6)">Year</th>
-                <th onclick="sortTable(7)">Filing Date</th>
-                <th onclick="sortTable(8)">Trades</th>
+                <th onclick="sortTable(0, this)">ID</th>
+                <th onclick="sortTable(1, this)">Doc ID</th>
+                <th onclick="sortTable(2, this)">First Name</th>
+                <th onclick="sortTable(3, this)">Last Name</th>
+                <th onclick="sortTable(4, this)">Filing Type</th>
+                <th onclick="sortTable(5, this)">State/District</th>
+                <th onclick="sortTable(6, this)">Year</th>
+                <th onclick="sortTable(7, this)">Filing Date</th>
+                <th onclick="sortTable(8, this)">Trades</th>
             </tr>
         </thead>
         <tbody>
