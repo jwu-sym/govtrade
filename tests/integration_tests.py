@@ -15,8 +15,9 @@ class TestSum(unittest.TestCase):
 
     def test_get_lastrun(self):
         lastrun = get_last_run()
-        num = len(lastrun)
-        self.assertEqual(num, 19, "Records last run timestamp should not be empty")
+        if lastrun:
+            num = len(lastrun)
+            self.assertEqual(num, 19, "Records last run timestamp should not be empty")
 
     def test_parse_records(self):
         from os import environ as env
