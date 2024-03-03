@@ -7,7 +7,7 @@ from flask import Flask, request, render_template
 
 import time
 import atexit
-from service import get_records
+from service import get_records, get_last_run
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -38,7 +38,8 @@ def echo_input():
 def records():
     records = get_records()  
     print(f'# of records {len(records)}')
-    return render_template('index.html', records=records)
+    lastrun = get_last_run()
+    return render_template('index.html', records=records, lastrun=lastrun)
    
 
 def daily_fetch_job():
@@ -50,7 +51,7 @@ def daily_fetch_job():
 
 def start_job_scheduler():
     scheduler = BackgroundScheduler()    
-    scheduler.add_job(func=daily_fetch_job, trigger="interval", seconds=120)
+    scheduler.add_job(func=daily_fetch_job, trigger="interval", seconds=7200)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 

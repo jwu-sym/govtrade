@@ -19,7 +19,6 @@
             border-radius: 4px;
             width: 50%; /* Makes the search box one-third of the table width */
             box-sizing: border-box;
-            margin-bottom: 20px;
         }
         table {
             border-collapse: collapse;
@@ -51,6 +50,11 @@
         .sort-desc:after {
             content: " \21E9"; /* Down arrow for descending */
         }
+        .lastrun {
+            font-size:13px;
+            color:#888;
+            text-align:right;
+        }
     </style>
 </head>
 <body>
@@ -59,6 +63,14 @@
     
     <table id="recordsTable">
         <thead>
+            <tr>
+                <td colspan="8"></td>
+                <td class="lastrun">
+                        last run: {{lastrun}}
+                </td>
+            </tr> 
+
+            </tr>
             <tr>
                 <th onclick="sortTable(0, this)">ID</th>
                 <th onclick="sortTable(1, this)">Doc ID</th>

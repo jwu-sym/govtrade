@@ -1,5 +1,6 @@
 import requests
 from zipfile import ZipFile
+from datetime import datetime
 
 import sys
 sys.path.append('src')
@@ -7,11 +8,9 @@ sys.path.append('src')
 from db import *
 from processor import extract_trades, convert_record
 
-
 from os import environ as env
 from dotenv import load_dotenv
 load_dotenv()
-
 
 def fetch(url, filename):
     response = requests.get(url)
@@ -55,8 +54,8 @@ def fetch_trade_doc(docId):
     url = f'{gtUrl}/{docId}.pdf'
     
     outfn = f'/tmp/{docId}.pdf' # trades file of the record
-    resp = fetch(url, outfn)
-    #resp = True
+    #resp = fetch(url, outfn)
+    resp = True
     
     if resp:
         return extract_trades(outfn)
@@ -95,6 +94,10 @@ def main():
     init()
     save_records(records)
     close()
+
+    f = open('/tmp/gt_lastrun','w')
+    f.write(f'{datetime.now()}')
+    f.close()
 
     print('Job  executed')
 

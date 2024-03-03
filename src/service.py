@@ -44,3 +44,9 @@ def get_records():
         records.append(r)
     return records
 
+def get_last_run():
+    last_run = None
+    f = open('/tmp/gt_lastrun')
+    last_run = str(f.read())
+    f.close()
+    return last_run
