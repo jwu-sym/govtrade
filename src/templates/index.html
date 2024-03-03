@@ -5,25 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GovTrade List</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        table, th, td {
-            border: 1px solid black;
+        #searchBox {
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 33%; /* Makes the search box one-third of the table width */
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adds a subtle shadow to the table */
+            border-radius: 4px; /* Rounded corners for the table */
+            overflow: hidden; /* Ensures the border-radius clips the table content */
         }
         th, td {
-            padding: 8px;
+            padding: 12px;
             text-align: left;
+            border-bottom: 1px solid #ddd; /* Adds a light border to each cell */
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #009879; /* A fresh color for headers */
+            color: white;
             cursor: pointer;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Zebra-striping for rows */
+        }
+        tr:hover {
+            background-color: #ddd; /* Hover effect for rows */
         }
     </style>
 </head>
 <body>
     <h2>GovTrades</h2>
+    <input type="text" id="searchBox" onkeyup="searchTable()" placeholder="Search for records...">
+    
     <table id="recordsTable">
         <thead>
             <tr>
@@ -42,7 +68,7 @@
             {% for record in records %}
                 <tr>
                     <td>{{ record.id }}</td>
-                    <td>{{ record.docId }}</td>
+                    <td><a href="https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/2024/{{record.docId}}.pdf">{{ record.docId }}</a></td>
                     <td>{{ record.firstName }}</td>
                     <td>{{ record.lastName }}</td>
                     <td>{{ record.filingType }}</td>
