@@ -13,7 +13,9 @@ def get_records():
         
         if not len(r['trades']):
             continue
-        
+        if r['lastName'] == 'Pelosi':
+            print(r['trades'])
+            
         records.append(r)
     return records
 

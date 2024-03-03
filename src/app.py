@@ -13,7 +13,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 app = Flask(__name__,static_url_path='/static')
 
 
-@app.route("/")
+@app.route("/echo")
 def main():
     return '''
      <form action="/echo_input" method="POST">
@@ -32,10 +32,11 @@ def echo_input():
     return "You entered:" + input_text + '<br/> Have a nice day'
 
 
-@app.route("/records", methods=["GET"])
+@app.route("/", methods=["GET"])
 def records():
     records = get_records()  
-    return render_template('index.html')
+    print(f'# of records {len(records)}')
+    return render_template('index.html', records=records)
    
 
 def daily_fetch_job():

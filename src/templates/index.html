@@ -2,10 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>FlaskApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GovTrade List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <h2>Welcome to FlaskApp!</h2>
+    <h2>GovTrades</h2>
+    <table id="recordsTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">ID</th>
+                <th onclick="sortTable(1)">Doc ID</th>
+                <th onclick="sortTable(2)">First Name</th>
+                <th onclick="sortTable(3)">Last Name</th>
+                <th onclick="sortTable(4)">Filing Type</th>
+                <th onclick="sortTable(5)">State/District</th>
+                <th onclick="sortTable(6)">Year</th>
+                <th onclick="sortTable(7)">Filing Date</th>
+                <th onclick="sortTable(8)">Trades</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+                <tr>
+                    <td>{{ record.id }}</td>
+                    <td>{{ record.docId }}</td>
+                    <td>{{ record.firstName }}</td>
+                    <td>{{ record.lastName }}</td>
+                    <td>{{ record.filingType }}</td>
+                    <td>{{ record.stateDst }}</td>
+                    <td>{{ record.year }}</td>
+                    <td>{{ record.filingDate }}</td>
+                    <td>{{ record.trades }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="static/js/sortable.js" type="text/javascript"></script>
 </body>
 </html>
