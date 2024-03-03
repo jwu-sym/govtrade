@@ -51,7 +51,7 @@ def daily_fetch_job():
 
 def start_job_scheduler():
     scheduler = BackgroundScheduler()    
-    scheduler.add_job(func=daily_fetch_job, trigger="interval", seconds=100)
+    scheduler.add_job(func=daily_fetch_job, trigger="interval", seconds=7200)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 

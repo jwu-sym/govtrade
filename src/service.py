@@ -48,7 +48,7 @@ def get_last_run():
     last_run = None
     try:
         f = open('/tmp/gt_lastrun')
-        last_run = str(f.read())[:19]
+        last_run = f'{str(f.read())[:19]} GMT'
         f.close()
     except:
         pass
