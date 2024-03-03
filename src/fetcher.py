@@ -1,12 +1,17 @@
-import os
 import requests
-import db
 from zipfile import ZipFile
+
+import sys
+sys.path.append('src')
+
+from db import *
 from processor import extract_trades, convert_record
+
 
 from os import environ as env
 from dotenv import load_dotenv
 load_dotenv()
+
 
 def fetch(url, filename):
     response = requests.get(url)
@@ -75,7 +80,7 @@ def fetch_trades(records):
 def save_records(records):
     #print(f'saving # records {len(records)}')
     for record in records:
-        db.insert_record(record)
+        insert_record(record)
 
 #@scheduler.task('cron', id='do_job_3', week='*', day_of_week='sun')
 def main():
@@ -87,9 +92,9 @@ def main():
     records = parse(fn)
     fetch_trades(records) # fetch individual trade doc per record
 
-    db.init()
+    init()
     save_records(records)
-    db.close()
+    close()
 
     print('Job  executed')
 

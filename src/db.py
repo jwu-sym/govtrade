@@ -10,7 +10,7 @@ CONN = None  # cached connection
 
 def get_connection():
     global CONN
-    if CONN:
+    if CONN and not CONN.closed:
         return CONN
     
     conn = None

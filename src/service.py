@@ -1,4 +1,4 @@
-from .db import read_records
+from db import read_records
 
 def get_records():
     

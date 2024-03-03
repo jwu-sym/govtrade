@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
+import sys
+sys.path.append('src')
 
 from flask import Flask, request, render_template
 #from flask import send_from_directory
 
 import time
 import atexit
-from .service import get_records
+from service import get_records
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -48,7 +50,7 @@ def daily_fetch_job():
 
 def start_job_scheduler():
     scheduler = BackgroundScheduler()    
-    scheduler.add_job(func=daily_fetch_job, trigger="interval", seconds=86400)
+    scheduler.add_job(func=daily_fetch_job, trigger="interval", seconds=120)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 
