@@ -55,6 +55,8 @@ def extract_trades(fn):
         text = text.split('Gains >\n$200?\n')[1]
         trades = text.split('* For the complete')[0]
         trades = '|'.join(trades.split('F S:'))
+        trades = trades.replace(' New\n','')
+        trades = trades.replace('-\n', '- ')
 
     except Exception as e:
         print(f'Error processing {fn}')

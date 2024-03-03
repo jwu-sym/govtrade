@@ -31,6 +31,7 @@
         th, td {
             padding: 12px;
             text-align: left;
+            vertical-align: top;
             border-bottom: 1px solid #ddd; /* Adds a light border to each cell */
         }
         th {
@@ -42,7 +43,7 @@
             background-color: #f2f2f2; /* Zebra-striping for rows */
         }
         tr:hover {
-            background-color: #ddd; /* Hover effect for rows */
+            background-color: #f0f0f0; /* Hover effect for rows */
         }
         .sort-asc:after {
             content: " \21E7"; /* Up arrow for ascending */
@@ -81,7 +82,7 @@
                     <td>{{ record.stateDst }}</td>
                     <td>{{ record.year }}</td>
                     <td>{{ record.filingDate }}</td>
-                    <td>{{ record.trades }}</td>
+                    <td>{{ record.trades|safe }}</td>
                 </tr>
             {% endfor %}
         </tbody>
