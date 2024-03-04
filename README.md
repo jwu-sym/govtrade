@@ -32,29 +32,19 @@ Architecture Description
     a. monitoring health of endpoints on api server, frontend, and web server.                                                                                            
     b. continuous integration testing by code change and build
 
-Diagram Before (Week 1):
-![Architecture](static/img/architecture_diag.png)
+Initial architecture diagram(Week 1) is almost identical, only design changes are:
+1. Relational(Postgresql) database was chosen instead of a document database. Initially I thought application needs store raw pdf files per record, which is large amount of data for relational database to handle. But I could parse trades text from pdf files during develpment, that significantly reduced data volume in the data store.
+2. Performance metrics services were added, using heroku managed ones.
 
-
-
-Minor design changes are:
-1. Relational(Postgresql) database was chosen and replaced document database. The decision was based on that the data size of government trades is relatively small and changes infrequently. 
-2. Monitoring services were added, using heroku services.
-
-### Auto Deployment
+### Continuous Delivery
 ### ![Deployment](static/img/auto_deployment.png)
  Application integrates with GitHub to make it easy to deploy to my app stack running on Heroku. When GitHub integration is configured for my app, Heroku can automatically build and release (if the build is successful).
-
-### CI Pipeline
- Continuous Integration implemented by using Heroku pipeline, it runs tests automatically for every subsequent code push to my GitHub repository.  Along with any merges to master from dev branch (which is used as staging).
-### ![Auto deploy pipeline](static/img/pipeline_ci.png)
-
-### Integration Tests
+ Continuous Delivery is implemented by using Heroku pipeline, it runs function & unit tests automatically for every subsequent code push to the GitHub.  Along with any merges to master from dev branch that is used as staging. Staging will be promoted to production servers after tests.
  Tests are written standard pyunit packages and running continously upon each code push in github.
 ### ![Integration Tests](static/img/pipeline_ci_tests.png)
 
-### Monitoring
- Heroku provides application server metrics, that includes Response time, Memory, Throughput and alerts service.
+### Monitoring and Performance Metrics
+ Heroku provides server performance metrics and alerts, it includes monotroing applicaiton Response time, Memory, Throughput and provide Alerts services. Alerting service will send notifications upon system events in production, such as unresponsive endpoints, memory exhaustions, throughput over certain threshold limit.
 
 ### ![Monitoring](static/img/app_monitoring_metrics-1.png)
 ### ![Monitoring 2](static/img/app_monitoring_metrics-2.png)
@@ -66,29 +56,29 @@ Minor design changes are:
 <strong>Code Structure:</strong>
 
 ### Web Application ([app.py](src/app.py)/[service.py](src/service.py))
- 1. Standard flask app, that uses routing/templates to render web page.
- 2. Apscheduler BackgroundScheduler is started when app.py starts, it runs [fetcher.py](src/fetcher.py) 'main' method periodcally (every two hours). The timestamp of data collection is displayed on the bottom of the site page.
- 3. [service.py](src/service.py) provides db records for the page by retrieving them from database. It does certain trades data convertions on unstructured raw data.
+ 1. Standard Python Flask web app, that routes http requests and responds with templated data from database on web pages.
+ 2. Apscheduler BackgroundScheduler is started when app.py starts, it runs [fetcher.py](src/fetcher.py) 'main' method periodcally. The timestamp of data collection is displayed on the bottom of the site page.
+ 3. [service.py](src/service.py) provides db records for the endpoint by retrieving them from database. It does certain data convertions on unstructured raw trades data.
 
 #### Data Collection
 1. [fetcher.py](src/fetcher.py) uses Python requests lib to fetch two main public sites.
   respectively: 
-    - https://disclosures-clerk.house.gov/public_disc/financial-pdfs/2024FD.zip all congress members' trades list disclosed in 2024.
+    - https://disclosures-clerk.house.gov/public_disc/financial-pdfs/{year}FD.zip all congress members' trades disclosed in the year.
     - https://disclosures-clerk.house.gov/public_disc/ptr-pdfs/2024/{docId} individual trade disclosure doc record.
     
-    - fetcher.py attaches individual parsed trade doc to record
-    - fetcher.py save records to postgresql database (hosted in Heroku)
-
+    - attaches individual parsed trade doc to record
+    - save records to postgresql database (hosted in Heroku)
+    - has function to collect multi years records.
 
 2. [processor.py](src/processor.py) helps fetcher.py convert raw data to structured records, extracts trades from trade pdf doc per record.
-3. [db.py](src/db.py) inserts corresponding records to postgresql database hosted in heroku.
-4. DB is postgresql, connection parameters are in .env file.
+3. [db.py](src/db.py) inserts/update/remove gov trades records to a postgresql database hosted in heroku.
+4. DB connection parameters are in .env file.
 Sample db records screenshot [here](static/img/db_records.png).
 
 
 
 #### Frontend
-HTML page sort/search functionality is using sortable.js, the bottom displays data collection time.
+HTML page provides user to view/search/select goverment trading records. Application server is running a python flask stack. sort/search functionality uses sortable.js, bottom 'last run' displays data collection time.
 
 #### <strong>Public url of my project:   </strong>    [https://govtrade-a46bca12cc9b.herokuapp.com/](https://govtrade-a46bca12cc9b.herokuapp.com/)
 
