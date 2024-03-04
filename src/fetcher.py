@@ -96,7 +96,8 @@ def main(year='2024'):
 
     records = parse(fn, year)
     fetch_trade_docs(records) # fetch individual trade doc per record
-    
+    remove(fn)
+
     #db operations # init()
     remove_records(f"year='{year}'")
     save_records(records)

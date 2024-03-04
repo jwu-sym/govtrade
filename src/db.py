@@ -92,10 +92,7 @@ def remove_records(filter=None, tablename='trades'):
 
         with conn.cursor() as cur:
             cur.execute(sql)
-            records = cur.fetchmany(2000)
-            return records
-
-        
+            
     except (Exception, DatabaseError) as error:
         print(error)
                 
