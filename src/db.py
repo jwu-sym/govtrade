@@ -65,9 +65,11 @@ def insert_record(r):
     except (Exception, DatabaseError) as error:
         print(error)
 
-def read_records(columns, tablename='trades'):
+def read_records(columns, tablename='trades', filter=None):
     try:
         sql = f"select {','.join(columns)} from {tablename}"
+        if filter:
+            sql = sql + f' where {filter}'
         
         conn = get_connection()
 
@@ -79,4 +81,21 @@ def read_records(columns, tablename='trades'):
         
     except (Exception, DatabaseError) as error:
         print(error)
+
+def remove_records(filter=None, tablename='trades'):
+    try:
+        sql = f"delete from {tablename}"
+        if filter:
+            sql = sql + f' where {filter}'
         
+        conn = get_connection()
+
+        with conn.cursor() as cur:
+            cur.execute(sql)
+            records = cur.fetchmany(2000)
+            return records
+
+        
+    except (Exception, DatabaseError) as error:
+        print(error)
+                

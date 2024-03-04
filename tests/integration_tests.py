@@ -20,11 +20,8 @@ class TestSum(unittest.TestCase):
             self.assertEqual(num, 19, "Records last run timestamp should not be empty")
 
     def test_parse_records(self):
-        from os import environ as env
-        from dotenv import load_dotenv
-        load_dotenv()
-
-        fn = env['GOVTRADE_FILE']  # congress members trades filename
+        
+        fn = 'data/2024FD.zip' # congress members trades filename
         records = parse(fn)
         num = len(records)
         self.assertGreater(num, 0, "# of Records parsed should be greter 0")

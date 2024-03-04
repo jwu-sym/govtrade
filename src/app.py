@@ -29,17 +29,16 @@ def main():
 @app.route("/echo_input", methods=["POST"])
 def echo_input():
     input_text = request.form.get("user_input", "")
-    if not len(input_text):
-        input_text = 'Elena says Hi'
     return "You entered:" + input_text + '<br/> Have a nice day'
 
 
 @app.route("/", methods=["GET"])
 def records():
-    records = get_records()  
+    year = request.args.get("year", '2024')
+    records = get_records(year)
     print(f'# of records {len(records)}')
     lastrun = get_last_run()
-    return render_template('index.html', records=records, lastrun=lastrun)
+    return render_template('index.html', records=records, year=year, lastrun=lastrun)
    
 
 def daily_fetch_job():

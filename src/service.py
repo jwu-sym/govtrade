@@ -1,9 +1,8 @@
 from db import read_records
 
-def get_records():
-    
+def get_records(year='2024'):
     columns = ['id', 'docId', 'firstName', 'lastName', 'filingType', 'stateDst', 'year', 'filingDate', 'trades']
-    rows = read_records(columns)
+    rows = read_records(columns, filter=f"year='{year}'")
 
     records = []
     for row in rows:
@@ -48,7 +47,7 @@ def get_last_run():
     last_run = None
     try:
         f = open('/tmp/gt_lastrun')
-        last_run = f'{str(f.read())[:19]} GMT'
+        last_run = f'{str(f.read())[:19]}'
         f.close()
     except:
         pass

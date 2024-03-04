@@ -7,7 +7,7 @@ sys.path.append('src')
 
 from db import *
 from processor import extract_trades, convert_record
-
+from os import remove
 from os import environ as env
 from dotenv import load_dotenv
 load_dotenv()
@@ -30,11 +30,12 @@ def fetch(url, filename):
 
     return content
 
-def parse(filename):
+def parse(filename, year='2024'):
     lines = None
 
     with ZipFile(filename) as myzip:
-        with myzip.open('2024FD.txt') as myfile:
+        csvfile = f'{year}FD.txt'
+        with myzip.open(csvfile) as myfile:
             lines = myfile.readlines()
 
     #columns = lines[0]
@@ -49,23 +50,22 @@ def parse(filename):
 
     return records
 
-def fetch_trade_doc(docId):
-    gtUrl = env['GOVTRADE_URL']
-    url = f'{gtUrl}/{docId}.pdf'
-    
-    outfn = f'/tmp/{docId}.pdf' # trades file of the record
-    resp = fetch(url, outfn)
-    #resp = True
-    
-    if resp:
-        return extract_trades(outfn)
     
 
-def fetch_trades(records):
-
+def fetch_trade_docs(records):
+    base_url = env['GOVTRADE_URL']
+    
     for record in records:
         docId = record['docId']
-        trades = fetch_trade_doc(docId) # fetch individual trade doc
+        year = record['year']
+        url = f'{base_url}/{year}/{docId}.pdf'
+    
+        outfn = f'/tmp/{docId}.pdf' # trades file of the record
+        content = fetch(url, outfn)
+        
+        trades = None
+        if content:
+            trades = extract_trades(outfn)
         
         if not trades:
             trades = ''
@@ -81,17 +81,24 @@ def save_records(records):
     for record in records:
         insert_record(record)
 
+def fetch_historical(years=['2023','2022','2021']):
+    for year in years:
+        main(year)
+
 #@scheduler.task('cron', id='do_job_3', week='*', day_of_week='sun')
-def main():
-    url = env['GOVTRADELIST_URL']
-    fn = env['GOVTRADE_FILE']  # congress members trades filename
+def main(year='2024'):
+    
+    fn = f'{year}FD.zip' # congress members trades filename
+    base_url = env['GOVTRADELIST_URL']
+    url = f'{base_url}/{fn}'
     
     fetch(url, fn) # fetch gov trades list
 
-    records = parse(fn)
-    fetch_trades(records) # fetch individual trade doc per record
-
-    init()
+    records = parse(fn, year)
+    fetch_trade_docs(records) # fetch individual trade doc per record
+    
+    #db operations # init()
+    remove_records(f"year='{year}'")
     save_records(records)
     close()
 
@@ -103,4 +110,5 @@ def main():
 
 if __name__ == '__main__' :
     main()
+    #fetch_historical()
     
