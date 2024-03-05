@@ -17,11 +17,13 @@ Architecture Description
 
    a. invoke periodical data collectors and preprocessor.
 
-   b. invoke batch data processor to transform structured raw data to application data structures and save/update them to database.
+   b. invoke batch data processor to transform structured raw data to application data structures and save update them to database.
 
 4. Batch data processor does data transformation, data analysis and storing data for API server to use.
 
 5. API server provides endpoints for application servera /dashboardb /search (by name/filing date/stock symbol)
+
+6. Integration server: This component facilitates the integration and deployment of the application code from the source repository to the staging environment.
 
 6. Frontend server uses template language to serve html pages from API server endpoints.
 
@@ -33,18 +35,23 @@ Architecture Description
     b. continuous integration testing by code change and build
 
 Initial architecture diagram(Week 1) is almost identical, only design changes are:
-1. Relational(Postgresql) database was chosen instead of a document database. Initially I thought application needs store raw pdf files per record, which is large amount of data for relational database to handle. But I could parse trades text from pdf files during develpment, that significantly reduced data volume in the data store.
+1. Relational(Postgresql) database was chosen instead of a document database. Initially I thought application needs store raw pdf files per record, which is large amount of data for relational database to handle. But in my development stage I could parse trades text in pdf files, that significantly reduced data amount to data store. Also search ability is more robust when using a relational database built in sql query.
 2. Performance metrics services were added, using heroku managed ones.
 
 ### Continuous Delivery
 ### ![Deployment](static/img/auto_deployment.png)
  Application integrates with GitHub to make it easy to deploy to my app stack running on Heroku. When GitHub integration is configured for my app, Heroku can automatically build and release (if the build is successful).
  Continuous Delivery is implemented by using Heroku pipeline, it runs function & unit tests automatically for every subsequent code push to the GitHub.  Along with any merges to master from dev branch that is used as staging. Staging will be promoted to production servers after tests.
- Tests are written standard pyunit packages and running continously upon each code push in github.
+ A few illustrative tests were written using standard pytest library and running continously upon each code change in GitHub.
 ### ![Integration Tests](static/img/pipeline_ci_tests.png)
 
+Staging environment: This is a pre-production environment where the application is deployed and tested before being released to the production environment.
+
+### ![Pipeline](static/img/pipeline_ci.png)
+
 ### Monitoring and Performance Metrics
- Heroku provides server performance metrics and alerts, it includes monotroing applicaiton Response time, Memory, Throughput and provide Alerts services. Alerting service will send notifications upon system events in production, such as unresponsive endpoints, memory exhaustions, throughput over certain threshold limit.
+ Monitoring service monitors the system's performance, health, and potential issues, providing visibility and alerting mechanisms.
+ Heroku provides server performance metrics and alert services, it includes monotroing applicaiton Response time, Memory, Throughput. Alert service will send notifications upon system events in production, such as unresponsive endpoints, resource exhaustions, throughput over certain threshold limit.
 
 ### ![Monitoring](static/img/app_monitoring_metrics-1.png)
 ### ![Monitoring 2](static/img/app_monitoring_metrics-2.png)
