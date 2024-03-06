@@ -3,7 +3,7 @@ import unittest
 import sys
 sys.path.append('src')
 
-from service import get_records, get_last_run
+from service import get_records, get_lastrun
 from fetcher import *
 
 class TestSum(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestSum(unittest.TestCase):
         self.assertGreater(num, 0, "Records should be greater than 0")
 
     def test_get_lastrun(self):
-        lastrun = get_last_run()
+        lastrun = get_lastrun()
         if lastrun:
             num = len(lastrun)
             self.assertEqual(num, 19, "Records last run timestamp should not be empty")
