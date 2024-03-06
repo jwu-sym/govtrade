@@ -91,11 +91,11 @@ HTML page provides user to view/search/select goverment trading records. Applica
 
 
 #### Run project code locally, under project root directory:
-     `python3 -m venv venv`
-     `source ./venv/bin/activate`
-     `pip install -r requirements.txt`
-     `export FLASK_APP=src/app.py`
-     `flask run --port 1234 --debug`
+    python3 -m venv venv
+    source ./venv/bin/activate
+    pip install -r requirements.txt
+    export FLASK_APP=src/app.py
+    flask run --port 1234 --debug `
 
 
 
