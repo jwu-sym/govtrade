@@ -1,7 +1,7 @@
 from db import read_records
 from datetime import datetime
 
-def get_records(year='2024'):
+def get_records(year='2024', parse_trades=True):
     columns = ['id', 'docId', 'firstName', 'lastName', 'filingType', 'stateDst', 'year', 'filingDate', 'trades']
     rows = read_records(columns, filter=f"year='{year}'")
 
@@ -11,9 +11,25 @@ def get_records(year='2024'):
         for i in range(len(columns)):    
             r[columns[i]] = row[i]
         
+        
         if not len(r['trades']):
             continue
 
+        #if r['lastName'] in ['Pelosi']:
+        #    print(f'{r["lastName"]} {len(trades)} {trades}')
+        
+        records.append(r)
+
+    
+    if parse_trades:
+        convert_trades(records)
+
+    return records
+
+
+def convert_trades(records):
+    for r in records:
+        
         trades = []
         for trade in r['trades'].split('|'):
             trade = trade.replace('\n', '<br/>')
@@ -36,14 +52,7 @@ def get_records(year='2024'):
             trades.append(trade)
         
         r['trades'] = ' '.join(trades)
-
-        #if r['lastName'] in ['Pelosi']:
-        #    print(f'{r["lastName"]} {len(trades)} {trades}')
-        
-
-        records.append(r)
     return records
-
 
 def set_lastrun():
     f = open('/tmp/gt_lastrun','w')

@@ -7,7 +7,7 @@ sys.path.append('src')
 
 from db import *
 from processor import extract_trades, convert_record
-from service import set_lastrun
+from service import set_lastrun, get_records
 from os import remove
 from os import environ as env
 from dotenv import load_dotenv
@@ -29,7 +29,7 @@ def fetch(url, filename):
     f = open(filename, 'wb')
     f.write(content)
     f.close()
-    
+
     return content
 
 def parse(filename, year='2024'):
@@ -88,9 +88,39 @@ def fetch_historical(years=['2023','2022','2021']):
         main(year)
 
 #@scheduler.task('cron', id='do_job_3', week='*', day_of_week='sun')
+def update(year='2024'):
+    
+    fn = f'/tmp/{year}FD.zip' # congress members trades filename
+    base_url = env['GOVTRADELIST_URL']
+    url = f'{base_url}/{fn}'
+    fetch(url, fn) # fetch gov trades list
+
+    records = parse(fn, year)
+    records = [r for r in records if len(r['trades'])]
+
+    rows = get_records(year, parse_trades=False)
+    print(f'# of records {len(rows)}')
+
+    docIds = [row['docId'] for row in rows]
+    
+    new_records = []#[records[0]]
+    
+    for record in records:
+        print('%s %s' % (record['docId'], record['docId'] in docIds))
+
+        if record['docId'] not in docIds:
+            new_records.append(record)
+
+    if len(new_records):
+        print(f'# of new records {len(new_records)}')
+        save_records(new_records)
+        
+    return new_records
+
+#@scheduler.task('cron', id='do_job_3', week='*', day_of_week='sun')
 def main(year='2024'):
     
-    fn = f'{year}FD.zip' # congress members trades filename
+    fn = f'/tmp/{year}FD.zip' # congress members trades filename
     base_url = env['GOVTRADELIST_URL']
     url = f'{base_url}/{fn}'
     
@@ -105,11 +135,10 @@ def main(year='2024'):
     save_records(records)
     close()
 
-    set_lastrun()
-
     print('Job  executed')
 
 if __name__ == '__main__' :
     main()
+    #update()
     #fetch_historical()
     

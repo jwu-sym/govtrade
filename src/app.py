@@ -44,21 +44,26 @@ def records():
 @app.before_request
 def load_timestamp():
     set_lastrun()
+    start_job_scheduler()
 
 def fetch_job():
-    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
-    print('fetching')
     from fetcher import main
     main()
+    set_lastrun()
 
+def update_job():
+    from fetcher import update
+    update()
+    set_lastrun()
 
 def start_job_scheduler():
     scheduler = BackgroundScheduler()    
-    scheduler.add_job(func=fetch_job, trigger="interval", seconds=7200)
+    scheduler.add_job(func=update_job, trigger="interval", seconds=7200)
+    scheduler.add_job(func=fetch_job, trigger="interval", seconds=86400)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 
-start_job_scheduler()
+
 
 
 
