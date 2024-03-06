@@ -1,4 +1,5 @@
 from db import read_records
+from datetime import datetime
 
 def get_records(year='2024'):
     columns = ['id', 'docId', 'firstName', 'lastName', 'filingType', 'stateDst', 'year', 'filingDate', 'trades']
@@ -43,7 +44,13 @@ def get_records(year='2024'):
         records.append(r)
     return records
 
-def get_last_run():
+
+def set_lastrun():
+    f = open('/tmp/gt_lastrun','w')
+    f.write(f'{datetime.now()}')
+    f.close()
+
+def get_lastrun():
     last_run = None
     try:
         f = open('/tmp/gt_lastrun')
@@ -52,3 +59,4 @@ def get_last_run():
     except:
         pass
     return last_run
+

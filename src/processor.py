@@ -1,5 +1,4 @@
 from PyPDF2 import PdfReader 
-from datetime import datetime
 
 def convert_record(line):
     line = str(line)
@@ -63,8 +62,3 @@ def extract_trades(fn):
         print(f'Error processing {fn}')
     
     return trades
-
-def set_lastrun():
-    f = open('/tmp/gt_lastrun','w')
-    f.write(f'{datetime.now()}')
-    f.close()

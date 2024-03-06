@@ -7,7 +7,8 @@ from flask import Flask, request, render_template
 
 import time
 import atexit
-from service import get_records, get_last_run
+from service import get_records, get_lastrun
+
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -37,7 +38,7 @@ def records():
     year = request.args.get("year", '2024')
     records = get_records(year)
     print(f'# of records {len(records)}')
-    lastrun = get_last_run()
+    lastrun = get_lastrun()
     return render_template('index.html', records=records, year=year, lastrun=lastrun)
    
 

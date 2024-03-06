@@ -1,12 +1,13 @@
 import requests
 from zipfile import ZipFile
-from datetime import datetime
+
 
 import sys
 sys.path.append('src')
 
 from db import *
 from processor import extract_trades, convert_record
+from service import set_lastrun
 from os import remove
 from os import environ as env
 from dotenv import load_dotenv
@@ -103,9 +104,7 @@ def main(year='2024'):
     save_records(records)
     close()
 
-    f = open('/tmp/gt_lastrun','w')
-    f.write(f'{datetime.now()}')
-    f.close()
+    set_lastrun()
 
     print('Job  executed')
 
