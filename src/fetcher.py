@@ -28,7 +28,8 @@ def fetch(url, filename):
 
     f = open(filename, 'wb')
     f.write(content)
-
+    f.close()
+    
     return content
 
 def parse(filename, year='2024'):
