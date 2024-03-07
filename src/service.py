@@ -1,28 +1,25 @@
-from db import read_records
+import db
 from datetime import datetime
 
-def get_records(year='2024', parse_trades=True):
+def read_records(year='2024'):
     columns = ['id', 'docId', 'firstName', 'lastName', 'filingType', 'stateDst', 'year', 'filingDate', 'trades']
-    rows = read_records(columns, filter=f"year='{year}'")
-
+    rows = db.read_records(columns, filter=f"year='{year}'")
     records = []
     for row in rows:
         r = {}
         for i in range(len(columns)):    
             r[columns[i]] = row[i]
-        
-        
-        if not len(r['trades']):
-            continue
-
-        #if r['lastName'] in ['Pelosi']:
-        #    print(f'{r["lastName"]} {len(trades)} {trades}')
-        
         records.append(r)
 
+    return records
+
+def get_records(year='2024'):
     
-    if parse_trades:
-        convert_trades(records)
+    records = read_records(year)
+
+    records = [r for r in records if len(r['trades'])]
+            
+    convert_trades(records)
 
     return records
 

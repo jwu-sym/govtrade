@@ -5,10 +5,11 @@ from zipfile import ZipFile
 import sys
 sys.path.append('src')
 
-from db import *
+import os
+import db
+
 from processor import extract_trades, convert_record
-from service import set_lastrun, get_records
-from os import remove
+from service import read_records
 from os import environ as env
 from dotenv import load_dotenv
 load_dotenv()
@@ -17,7 +18,7 @@ def fetch(url, filename):
     response = requests.get(url)
     
     if response.status_code == 404:
-        #print(f'skipped: {url} ')
+        print(f'skipped: {url} ')
         return None
     
     content = response.content
@@ -44,7 +45,6 @@ def parse(filename, year='2024'):
     
     records = []
     for line in lines[1:]:
-        
         record = convert_record(line)
         records.append(record)
 
@@ -81,7 +81,7 @@ def fetch_trade_docs(records):
 def save_records(records):
     #print(f'saving # records {len(records)}')
     for record in records:
-        insert_record(record)
+        db.insert_record(record)
 
 def fetch_historical(years=['2023','2022','2021']):
     for year in years:
@@ -89,30 +89,29 @@ def fetch_historical(years=['2023','2022','2021']):
 
 #@scheduler.task('cron', id='do_job_3', week='*', day_of_week='sun')
 def update(year='2024'):
-    
-    fn = f'/tmp/{year}FD.zip' # congress members trades filename
+    print('start update job')
+
     base_url = env['GOVTRADELIST_URL']
-    url = f'{base_url}/{fn}'
+    url = f'{base_url}/{year}FD.zip'
+    fn = f'/tmp/{year}FD.zip' # congress members trades filename
     fetch(url, fn) # fetch gov trades list
 
     records = parse(fn, year)
-    records = [r for r in records if len(r['trades'])]
-
-    rows = get_records(year, parse_trades=False)
-    print(f'# of records {len(rows)}')
-
-    docIds = [row['docId'] for row in rows]
+    existing_recs = read_records(year)
     
-    new_records = []#[records[0]]
+    docIds = [row['docId'] for row in existing_recs]
+
+    print(f'# of existing records {len(existing_recs)} {len(docIds)} new fetched {len(records)}')
+    
+    new_records = []
     
     for record in records:
-        print('%s %s' % (record['docId'], record['docId'] in docIds))
-
         if record['docId'] not in docIds:
             new_records.append(record)
 
+    print(f'Insert #{len(new_records)} new records ')
     if len(new_records):
-        print(f'# of new records {len(new_records)}')
+        fetch_trade_docs(new_records)
         save_records(new_records)
         
     return new_records
@@ -128,17 +127,21 @@ def main(year='2024'):
 
     records = parse(fn, year)
     fetch_trade_docs(records) # fetch individual trade doc per record
-    remove(fn)
+    os.remove(fn)
 
     #db operations # init()
-    remove_records(f"year='{year}'")
+    db.remove_records(f"year='{year}'")
     save_records(records)
-    close()
+    db.close()
 
     print('Job  executed')
+
+def remove_record(id):
+    db.remove_records(f"id={id}")
 
 if __name__ == '__main__' :
     main()
     #update()
     #fetch_historical()
+    #remove_record(26289)
     
