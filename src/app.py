@@ -5,13 +5,11 @@ sys.path.append('src')
 from flask import Flask, request, render_template
 #from flask import send_from_directory
 
-import time
+#import time
 import atexit
 from service import get_records, get_lastrun, set_lastrun
 
-
 from apscheduler.schedulers.background import BackgroundScheduler
-
                 
 app = Flask(__name__,static_url_path='/static')
 
@@ -41,8 +39,8 @@ def records():
     lastrun = get_lastrun()
     return render_template('index.html', records=records, year=year, lastrun=lastrun)
    
-@app.before_request
-def load_timestamp():
+
+def app_init():
     set_lastrun()
     start_job_scheduler()
 
@@ -58,12 +56,12 @@ def update_job():
 
 def start_job_scheduler():
     scheduler = BackgroundScheduler()    
-    scheduler.add_job(func=update_job, trigger="interval", seconds=7200)
+    scheduler.add_job(func=update_job, trigger="interval", seconds=60)
     scheduler.add_job(func=fetch_job, trigger="interval", seconds=86400)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 
 
-
+app_init()
 
 
