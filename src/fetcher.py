@@ -63,7 +63,7 @@ def fetch_trade_docs(records):
         year = record['year']
         url = f'{base_url}/{year}/{docId}.pdf'
     
-        outfn = f'./tmp/{docId}.pdf' # trades file of the record
+        outfn = f'/tmp/{docId}.pdf' # trades file of the record
         content = fetch(url, outfn)
         
         trades = None
@@ -94,7 +94,7 @@ def update(year='2024'):
 
     base_url = env['GOVTRADELIST_URL']
     url = f'{base_url}/{year}FD.zip'
-    fn = f'./tmp/{year}FD.zip' # congress members trades filename
+    fn = f'/tmp/{year}FD.zip' # congress members trades filename
     fetch(url, fn) # fetch gov trades list
 
     records = parse(fn, year)
@@ -120,7 +120,7 @@ def update(year='2024'):
 #@scheduler.task('cron', id='do_job_3', week='*', day_of_week='sun')
 def main(year='2024'):
     
-    fn = f'./tmp/{year}FD.zip' # congress members trades filename
+    fn = f'/tmp/{year}FD.zip' # congress members trades filename
     base_url = env['GOVTRADELIST_URL']
     url = f'{base_url}/{year}FD.zip'
     
