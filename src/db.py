@@ -65,11 +65,14 @@ def insert_record(r):
     except (Exception, DatabaseError) as error:
         print(error)
 
-def read_records(columns, tablename='trades', filter=None):
+def read_records(columns, tablename='trades', filter=None, orderBy=None):
     try:
         sql = f"select {','.join(columns)} from {tablename}"
         if filter:
             sql = sql + f' where {filter}'
+        
+        if orderBy:
+            sql = sql + f' order by {orderBy} desc'
         
         conn = get_connection()
 

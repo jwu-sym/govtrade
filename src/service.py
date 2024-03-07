@@ -3,7 +3,7 @@ from datetime import datetime
 
 def read_records(year='2024'):
     columns = ['id', 'docId', 'firstName', 'lastName', 'filingType', 'stateDst', 'year', 'filingDate', 'trades']
-    rows = db.read_records(columns, filter=f"year='{year}'")
+    rows = db.read_records(columns, filter=f"year='{year}'", orderBy='filingDate')
     records = []
     for row in rows:
         r = {}
@@ -52,14 +52,14 @@ def convert_trades(records):
     return records
 
 def set_lastrun():
-    f = open('/tmp/gt_lastrun','w')
+    f = open('./tmp/gt_lastrun','w')
     f.write(f'{datetime.now()}')
     f.close()
 
 def get_lastrun():
     last_run = None
     try:
-        f = open('/tmp/gt_lastrun')
+        f = open('./tmp/gt_lastrun')
         last_run = f'{str(f.read())[:19]}'
         f.close()
     except:

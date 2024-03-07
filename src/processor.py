@@ -25,7 +25,7 @@ def convert_record(line):
     o['filingType'] = line[4]
     o['stateDst'] = line[5]
     o['year'] = line[6]
-    o['filingDate'] = line[7]
+    o['filingDate'] = convert_shortform_us_date_to_date(line[7])
     o['docId'] = line[8]
 
     return o
@@ -62,3 +62,18 @@ def extract_trades(fn):
         print(f'Error processing {fn}')
     
     return trades
+
+
+import datetime
+
+def convert_shortform_us_date_to_date(date_string):
+    if '/' not in date_string:
+        return date_string
+    month, day, year = date_string.split("/")
+    # Create a date object from the components.
+    date = datetime.date(int(year), int(month), int(day))
+
+    return date.strftime('%Y-%m-%d')
+
+# Example usage:
+
