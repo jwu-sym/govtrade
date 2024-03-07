@@ -56,7 +56,7 @@ def update_job():
 
 def start_job_scheduler():
     scheduler = BackgroundScheduler()    
-    scheduler.add_job(func=update_job, trigger="interval", seconds=60)
+    scheduler.add_job(func=update_job, trigger="interval", seconds=7200)
     scheduler.add_job(func=fetch_job, trigger="interval", seconds=86400)
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
