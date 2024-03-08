@@ -19,7 +19,7 @@ def send_mail(recs):
 
     client = mt.MailtrapClient(token=f"{env['MAIL_TOKEN']}")
     client.send(mail)
-    print('sent mail')
+    print('sent mail %s %s' % (html, env['MAIL_RECIPIENT']))
 
 
 def render_text(recs):

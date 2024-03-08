@@ -6,10 +6,11 @@ import sys
 sys.path.append('src')
 
 import os
+import argparse
 import db
-
 from processor import extract_trades, convert_record
 from service import read_records
+
 from os import environ as env
 from dotenv import load_dotenv
 load_dotenv()
@@ -109,11 +110,13 @@ def update(year='2024'):
     for record in records:
         if record['docId'] not in docIds:
             new_records.append(record)
-
-    print(f'Insert #{len(new_records)} new records ')
+    
+    #new_records = existing_recs[0:2]
+    
     if len(new_records):
         fetch_trade_docs(new_records)
         save_records(new_records)
+        print(f'Inserted #{len(new_records)} new records ')
         
     return new_records
 
@@ -140,9 +143,29 @@ def main(year='2024'):
 def remove_record(id):
     db.remove_records(f"id={id}")
 
+    
+    
 if __name__ == '__main__' :
-    main()
-    #update()
-    #fetch_historical()
-    #remove_record(26289)
+    parser = argparse.ArgumentParser(prog='GovTrade Fetcher', description='Fetching Government Financial Records')
+    parser.add_argument("--main", help="main fetcher")
+    parser.add_argument("--update", help="incremental fetcher")
+    parser.add_argument("--historical", help="fetch historicals")
+    parser.add_argument("--remove", help="remove records")
+    parser.add_argument("--init", help="remove schema")
+    
+    
+    args = parser.parse_args()
+    
+    
+    if args.main:
+        main()
+    elif args.update:
+        update()
+    elif args.historical:
+        fetch_historical()
+    elif args.init:
+        db.init()
+    elif args.remove:
+        id = args.remove
+        remove_record(id)
     

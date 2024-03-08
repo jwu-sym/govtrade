@@ -95,6 +95,7 @@ def remove_records(filter=None, tablename='trades'):
 
         with conn.cursor() as cur:
             cur.execute(sql)
+            print(f'executing {sql}')
             
     except (Exception, DatabaseError) as error:
         print(error)
