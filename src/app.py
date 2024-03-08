@@ -3,16 +3,16 @@ import sys
 sys.path.append('src')
 
 from flask import Flask, request, render_template
-#from flask import send_from_directory
 
-#import time
+
 import atexit
 from service import get_records, get_lastrun, set_lastrun
 
 from apscheduler.schedulers.background import BackgroundScheduler
-                
-app = Flask(__name__,static_url_path='/static')
+from watcher import send_mail
+from fetcher import update
 
+app = Flask(__name__,static_url_path='/static')
 
 @app.route("/echo")
 def main():
@@ -35,8 +35,8 @@ def echo_input():
 def records():
     year = request.args.get("year", '2024')
     records = get_records(year)
-    print(f'# of records {len(records)}')
     lastrun = get_lastrun()
+    send_mail(records[0:2])
     return render_template('index.html', records=records, year=year, lastrun=lastrun)
    
 
@@ -50,9 +50,14 @@ def fetch_job():
     set_lastrun()
 
 def update_job():
-    from fetcher import update
-    update()
+    
+    recs = update()
+    if not recs:
+       return
+    
     set_lastrun()
+    send_mail(recs)
+
 
 def start_job_scheduler():
     scheduler = BackgroundScheduler()    

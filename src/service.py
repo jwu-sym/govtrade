@@ -52,14 +52,14 @@ def convert_trades(records):
     return records
 
 def set_lastrun():
-    f = open('/tmp/gt_lastrun','w')
+    f = open('/tmp/gt_lastrun.ts','w')
     f.write(f'{datetime.now()}')
     f.close()
 
 def get_lastrun():
     last_run = None
     try:
-        f = open('/tmp/gt_lastrun')
+        f = open('/tmp/gt_lastrun.ts')
         last_run = f'{str(f.read())[:19]}'
         f.close()
     except:
