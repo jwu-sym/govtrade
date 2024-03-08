@@ -36,7 +36,7 @@ def records():
     year = request.args.get("year", '2024')
     records = get_records(year)
     lastrun = get_lastrun()
-    send_mail(records[0:2])
+    #send_mail(records[0:2])
     return render_template('index.html', records=records, year=year, lastrun=lastrun)
    
 
