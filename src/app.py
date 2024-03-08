@@ -41,8 +41,9 @@ def records():
    
 
 def app_init():
-    set_lastrun()
-    start_job_scheduler()
+    if not get_lastrun():
+        set_lastrun()
+        start_job_scheduler()
 
 def fetch_job():
     from fetcher import main
