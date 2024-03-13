@@ -1,0 +1,8 @@
+#!/bin/bash
+
+git status
+git add . -u
+git commit -m "update $1"
+git push --quiet
+
+

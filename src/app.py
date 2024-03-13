@@ -14,14 +14,21 @@ from fetcher import update
 
 app = Flask(__name__,static_url_path='/static')
 
+@app.route("/home")
+def home():
+    return render_template("home.html")
+
 @app.route("/echo")
 def main():
     return '''
+     <img src="/static/img/home.webp"></img>
      <form action="/echo_input" method="POST">
          <input name="user_input">
          <input type="submit" value="Submit!">
      </form>
      <img width="200" src="/static/img/elena.png"></img>
+     
+
 
      '''
 
