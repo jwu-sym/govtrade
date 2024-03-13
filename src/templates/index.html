@@ -84,9 +84,13 @@
                 <th onclick="sortTable(3, this)">Last Name</th>
                 <th onclick="sortTable(4, this)">Filing Type</th>
                 <th onclick="sortTable(5, this)">State/District</th>
-                <th onclick="sortTable(6, this)">Year</th>
-                <th onclick="sortTable(7, this)">Filing Date</th>
-                <th onclick="sortTable(8, this)">Trades</th>
+                <!--<th onclick="sortTable(6, this)">Year</th>-->
+                <th onclick="sortTable(6, this)">Filing Date</th>
+                <th onclick="sortTable(7, this)">Trade Date</th>
+                <th onclick="sortTable(8, this)">Action</th>
+                <th onclick="sortTable(9, this)">Amount</th>
+                <th onclick="sortTable(10, this)">Asset</th>
+                <th onclick="sortTable(11, this)">Description</th>
             </tr>
         </thead>
         <tbody>
@@ -98,9 +102,13 @@
                     <td>{{ record.lastName }}</td>
                     <td>{{ record.filingType }}</td>
                     <td>{{ record.stateDst }}</td>
-                    <td>{{ record.year }}</td>
+                    <!--<td>{{ record.year }}</td>-->
                     <td>{{ record.filingDate }}</td>
-                    <td>{{ record.trades|safe }}</td>
+                    <td>{{ record.tradeDate }}</td>
+                    <td>{{ record.action }}</td>
+                    <td>{{ record.amount }}</td>
+                    <td style="width:20px;"><b>{{ record.symbol }}</b></td>
+                    <td>{{ record.desc|safe }}</td>
                 </tr>
             {% endfor %}
             
