@@ -1,6 +1,7 @@
 import db
 import re
 from datetime import datetime
+from processor import convert_shortform_us_date_to_date
 
 def read_records(year='2024'):
     columns = ['id', 'docId', 'firstName', 'lastName', 'filingType', 'stateDst', 'year', 'filingDate', 'trades']
@@ -119,13 +120,3 @@ def get_lastrun():
         pass
     return last_run
 
-import datetime
-
-def convert_shortform_us_date_to_date(date_string):
-    if '/' not in date_string:
-        return date_string
-    month, day, year = date_string.split("/")
-    # Create a date object from the components.
-    date = datetime.date(int(year), int(month), int(day))
-
-    return date.strftime('%Y-%m-%d')

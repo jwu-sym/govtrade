@@ -43,8 +43,8 @@ class TestSum(unittest.TestCase):
         record = records[0]
         self.assertGreater(len(record['trades']), 0, "Record should have trades")
     
-        trades = record['trades']
-        self.assertTrue('Buy' in trades or 'Sell' in trades, "Record should have trade type")
+        desc = record['desc']
+        self.assertTrue('Buy' in desc or 'Sell' in desc, "Record should have trade type")
 
 if __name__ == '__main__':
     unittest.main()
