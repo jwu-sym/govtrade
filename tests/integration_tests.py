@@ -40,7 +40,7 @@ class TestSum(unittest.TestCase):
 
     def test_record_trades(self):
         records = get_records()
-        record = records[0]
+        record = records[1]
         self.assertGreater(len(record['trades']), 0, "Record should have trades")
     
         desc = record['desc']
