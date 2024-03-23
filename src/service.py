@@ -38,10 +38,11 @@ def convert_trades(records):
         symbol = ''
         last_line = ''
         for trade in r['trades'].split('|'):
-            if '[ST]' in trade:
+          for token in ['[ST]', '[GS]', '[AB]']:
+            if token in trade:
                 last_line = str(trade)
 
-                tmp_start = trade.index('[ST]') + 4
+                tmp_start = trade.index(token) + 4
                 tmp = trade[tmp_start:].strip()
                 action = tmp[0] == 'S' and 'Sell' or 'Buy'
 
@@ -53,10 +54,14 @@ def convert_trades(records):
                 amt_tmp = trade_data.split(' ')[-3:]
                 amount = ' '.join(amt_tmp)
 
-                regex = r"\((.*?)\)"
-                symbol = re.search(regex, last_line).group(1)
+                if token == '[GS]':
+                    symbol = last_line.split('[GS]')[0]
+                else:
+                    regex = r"\((.*?)\)"
+                    symbol = re.search(regex, last_line).group(1)
                 
 
+            """
             if '[GS]' in trade:
                 last_line = str(trade)
 
@@ -73,7 +78,7 @@ def convert_trades(records):
                 amount = ' '.join(amt_tmp)
 
                 symbol = last_line.split('[GS]')[0]
-
+            """
 
             trade = trade.replace('\n', '<br/>')
 
@@ -94,7 +99,7 @@ def convert_trades(records):
             trade = trade.replace(')', '</b>)')
 
             trades.append(trade)
-            
+            break
             
 
         r['desc'] = ' '.join(trades)
