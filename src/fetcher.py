@@ -117,7 +117,11 @@ def update(year='2024'):
         fetch_trade_docs(new_records)
         save_records(new_records)
         print(f'Inserted #{len(new_records)} new records ')
-        
+    
+    print('new records', len(new_records))
+    new_records = [rec for rec in new_records if rec.amount > 50000]
+    print('filtered new_records', len(new_records))
+
     return new_records
 
 #@scheduler.task('cron', id='do_job_3', week='*', day_of_week='sun')
