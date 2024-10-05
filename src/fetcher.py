@@ -118,8 +118,6 @@ def update(year='2024'):
         save_records(new_records)
         print(f'Inserted #{len(new_records)} new records ')
     
-    new_records = existing_recs[0:1000]
-    
     #new_records = [rec for rec in new_records if rec["firstName"] == 'Nancy']
     
     return new_records
