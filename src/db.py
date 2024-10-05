@@ -15,7 +15,7 @@ def get_connection():
     
     conn = None
     try:
-        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+        conn = psycopg2.connect(DATABASE_URL)#, sslmode='require')
         conn.autocommit = True
         print(conn)
         

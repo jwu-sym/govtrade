@@ -85,7 +85,7 @@ def save_records(records):
     for record in records:
         db.insert_record(record)
 
-def fetch_historical(years=['2023','2022','2021']):
+def fetch_historical(years=['2023']):#,'2022','2021'
     for year in years:
         main(year)
 
